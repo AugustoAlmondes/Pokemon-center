@@ -34,7 +34,7 @@ export default function EditPokemonPage() {
 
   async function fetchPokemon() {
     try {
-      const data = await api<Pokemon>(`/pokemon/${id}`);
+      const data = await api<Pokemon>(`/pokemon/${id}`, { auth: true });
       
       if (String(data.createdBy) !== String(userId)) {
         alert("Sem permissão para editar este Pokémon.");

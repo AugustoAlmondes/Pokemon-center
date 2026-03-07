@@ -26,16 +26,16 @@ export default function DashboardPage() {
 
   const userId = getUserId();
 
-  // useEffect(() => {
-  //   // If auth finishes loading and there's no user, redirect to login
-  //   if (!authLoading && !user) {
-  //     redirect("/login");
-  //   }
+  useEffect(() => {
+    // If auth finishes loading and there's no user, redirect to login
+    if (!authLoading && !user) {
+      redirect("/login");
+    }
 
-  //   if (user) {
-  //     fetchPokemons();
-  //   }
-  // }, [user, authLoading]);
+    if (user) {
+      fetchPokemons();
+    }
+  }, [user, authLoading]);
 
   async function fetchPokemons() {
     try {
@@ -43,7 +43,7 @@ export default function DashboardPage() {
       setError("");
       // Using generic pokemon list endpoint. We don't need auth for GET /pokemon based on docs
       // "Pokémon list is global (shared)."
-      const data = await api<Pokemon[]>("/pokemon");
+      const data = await api<Pokemon[]>("/pokemon", { auth: true });
       setPokemons(data || []);
     } catch (err) {
       if (err instanceof ApiRequestError) {
@@ -75,9 +75,9 @@ export default function DashboardPage() {
     return <div style={{ minHeight: "100vh", background: "var(--bg-base)" }} />;
   }
 
-  // if (!user) {
-  //   return null; // Redirecting in useEffect
-  // }
+  if (!user) {
+    return null; // Redirecting in useEffect
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-base)" }}>

@@ -14,9 +14,9 @@ export default function CreatePokemonPage() {
   const [success, setSuccess] = useState("");
 
   if (authLoading) return <div style={{ minHeight: "100vh", background: "var(--bg-base)" }} />;
-  // if (!user) {
-  //   redirect("/login");
-  // }
+  if (!user) {
+    redirect("/login");
+  }
 
   async function handleSubmit(data: any) {
     setLoading(true);
