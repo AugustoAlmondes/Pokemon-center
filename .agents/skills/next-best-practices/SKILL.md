@@ -138,13 +138,6 @@ See [parallel-routes.md](./parallel-routes.md) for:
 - `default.tsx` for fallbacks
 - Closing modals correctly with `router.back()`
 
-## Self-Hosting
-
-See [self-hosting.md](./self-hosting.md) for:
-- `output: 'standalone'` for Docker
-- Cache handlers for multi-instance ISR
-- What works vs needs extra setup
-
 ## Debug Tricks
 
 See [debug-tricks.md](./debug-tricks.md) for:
