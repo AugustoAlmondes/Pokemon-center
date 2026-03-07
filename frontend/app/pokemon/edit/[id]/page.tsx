@@ -24,7 +24,6 @@ export default function EditPokemonPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      // window.location.href = "/login";
       redirect("/login");
     }
 
@@ -37,7 +36,6 @@ export default function EditPokemonPage() {
     try {
       const data = await api<Pokemon>(`/pokemon/${id}`);
       
-      // Se não for o dono, redireciona
       if (String(data.createdBy) !== String(userId)) {
         alert("Sem permissão para editar este Pokémon.");
         router.push("/dashboard");

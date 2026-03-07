@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { PokemonForm } from "@/components/PokemonForm";
 import { useAuth } from "@/hooks/useAuth";
 import { api, ApiRequestError } from "@/lib/api";
+import { redirect } from "next/navigation";
 
 export default function CreatePokemonPage() {
   const { user, loading: authLoading } = useAuth();
@@ -13,10 +14,9 @@ export default function CreatePokemonPage() {
   const [success, setSuccess] = useState("");
 
   if (authLoading) return <div style={{ minHeight: "100vh", background: "var(--bg-base)" }} />;
-  if (!user) {
-    if (typeof window !== "undefined") window.location.href = "/login";
-    return null;
-  }
+  // if (!user) {
+  //   redirect("/login");
+  // }
 
   async function handleSubmit(data: any) {
     setLoading(true);
@@ -28,10 +28,10 @@ export default function CreatePokemonPage() {
         body: data,
         auth: true,
       });
-      
+
       setSuccess("Pokémon cadastrado com sucesso!");
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        redirect("/dashboard");
       }, 1500);
     } catch (err) {
       if (err instanceof ApiRequestError) setError(err.message);
@@ -49,12 +49,12 @@ export default function CreatePokemonPage() {
           <h1 className="dashboard-title">Adicionar à Pokédex</h1>
         </header>
 
-        <PokemonForm 
-          onSubmit={handleSubmit} 
-          isLoading={loading} 
-          serverError={error} 
+        <PokemonForm
+          onSubmit={handleSubmit}
+          isLoading={loading}
+          serverError={error}
           successMessage={success}
-          submitLabel="Registrar Pokémon" 
+          submitLabel="Registrar Pokémon"
         />
       </main>
     </div>

@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -14,20 +15,20 @@ datasource db {
 }
 
 model Users {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
 }
 
 model Pokemon {
-  id String @id @default(uuid())
-  name String
-  type String
-  level Int
-  hp Int
+  id            String   @id @default(uuid())
+  name          String
+  type          String
+  level         Int
+  hp            Int
   pokedexNumber Int
-  createdBy String
-  createdAt DateTime @default(now())
+  createdBy     String
+  createdAt     DateTime @default(now())
 }
