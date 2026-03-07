@@ -6,21 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('pokemon')
 export class PokemonController {
+
   constructor(private readonly pokemonService: PokemonService) {}
 
   @Post()
-  create(@Body() createPokemonDto: CreatePokemonDto) {
-    // Manually pass a default string or handle auth as requested by user later.
-    // Setting to a temporary string for now to satisfy Prisma schema for 'createdBy'
-    return this.pokemonService.create(createPokemonDto, 'manual-auth-user-id');
+  create(@Body() createPokemonDto: CreatePokemonDto, @Req() req: any) {
+    return this.pokemonService.create(createPokemonDto, req.user.userId);
   }
+
 
   @Get()
   findAll() {
