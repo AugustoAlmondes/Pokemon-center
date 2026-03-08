@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
 import { api, ApiRequestError } from "@/lib/api";
+import { MdEmail, MdLock, MdVisibility, MdVisibilityOff, MdErrorOutline } from "react-icons/md";
+import { useRouter } from "next/navigation";
 import LogoPokebola from "@/components/LogoPokebola";
 
 /* ── Schema Zod ─────────────────────────────── */
@@ -27,6 +29,7 @@ interface LoginResponse {
 
 /* ── Componente ─────────────────────────────── */
 export default function LoginPage() {
+  const router = useRouter();
   const [fields, setFields] = useState<LoginFields>({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState("");
@@ -66,7 +69,7 @@ export default function LoginPage() {
       });
 
       localStorage.setItem("token", data.access_token ?? data.token ?? "");
-      window.location.href = "/dashboard";
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof ApiRequestError) {
         setServerError(err.message);
@@ -109,11 +112,7 @@ export default function LoginPage() {
         {/* Erro do servidor */}
         {serverError && (
           <div className="error-alert" role="alert">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
+            <MdErrorOutline size={18} />
             {serverError}
           </div>
         )}
@@ -127,10 +126,7 @@ export default function LoginPage() {
             </label>
             <div className="input-wrapper">
               <span className="input-icon" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
+                <MdEmail size={18} />
               </span>
               <input
                 id="email"
@@ -160,10 +156,7 @@ export default function LoginPage() {
             </label>
             <div className="input-wrapper">
               <span className="input-icon" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
-                </svg>
+                <MdLock size={18} />
               </span>
               <input
                 id="password"
@@ -184,15 +177,9 @@ export default function LoginPage() {
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showPassword ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
+                  <MdVisibilityOff size={18} />
                 ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                  <MdVisibility size={18} />
                 )}
               </button>
             </div>
@@ -202,6 +189,7 @@ export default function LoginPage() {
               </span>
             )}
           </div>
+
 
           <button
             type="submit"

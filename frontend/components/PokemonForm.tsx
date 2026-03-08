@@ -11,6 +11,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { MdErrorOutline, MdCheckCircleOutline, MdWarning } from "react-icons/md";
+import { translatePokemonType } from "@/lib/pokemon-utils";
 
 const pokemonSchema = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -75,7 +77,11 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
 
       // Check Types
       const apiTypes = pokemonData.types.map((t: any) => t.type.name).join(", ");
-      if (!data.type.toLowerCase().split(",").some(t => apiTypes.toLowerCase().includes(t.trim()))) {
+      
+      // Translate the user input before comparison
+      const translatedUserType = data.type.split(",").map(t => translatePokemonType(t.trim())).join(", ");
+
+      if (!translatedUserType.toLowerCase().split(",").some(t => apiTypes.toLowerCase().includes(t.trim()))) {
           detectedConflicts.push({
             field: "Tipo",
             expected: apiTypes,
@@ -116,38 +122,43 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
     }
 
     const detectedConflicts = await validateWithPokeAPI(result.data);
+    
+    // Prepare data for submission (translating types)
+    const finalData = {
+      ...result.data,
+      type: result.data.type.split(",").map(t => translatePokemonType(t.trim())).join(", ")
+    };
+
     if (detectedConflicts) {
       setConflicts(detectedConflicts);
       setShowConflictModal(true);
     } else {
-      await onSubmit(result.data);
+      await onSubmit(finalData);
     }
   }
 
   const handleProceed = async () => {
     setShowConflictModal(false);
-    await onSubmit(fields);
+    const finalData = {
+      ...fields,
+      type: fields.type.split(",").map(t => translatePokemonType(t.trim())).join(", ")
+    };
+    await onSubmit(finalData);
   };
+
 
   return (
     <div className="login-card" style={{ maxWidth: "600px", margin: "0 auto" }}>
       {serverError && (
         <div className="error-alert" role="alert">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
+          <MdErrorOutline size={18} />
           {serverError}
         </div>
       )}
 
       {successMessage && (
          <div className="success-alert" role="alert" style={{ background: "rgba(34, 197, 94, 0.1)", border: "1px solid rgba(34, 197, 94, 0.3)", color: "#4ade80", padding: "1rem", borderRadius: "8px", marginBottom: "1.25rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-            <polyline points="22 4 12 14.01 9 11.01" />
-          </svg>
+          <MdCheckCircleOutline size={18} />
           {successMessage}
         </div>
       )}
@@ -270,11 +281,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
         <DialogContent className="bg-surface border-border text-primary backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold flex items-center gap-2 text-yellow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
+              <MdWarning size={24} />
               Conflito Detectado
             </DialogTitle>
             <DialogDescription className="text-muted-foreground pt-2">

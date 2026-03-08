@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 
 export interface DecodedUser {
   sub?: string; // Standard JWT subject (usually user ID)
@@ -12,6 +13,7 @@ export interface DecodedUser {
 }
 
 export function useAuth() {
+  const router = useRouter();
   const [user, setUser] = useState<DecodedUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -36,8 +38,9 @@ export function useAuth() {
 
   const logout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    router.push("/login");
   };
+
 
   function getUserId() {
     if (!user) return null;

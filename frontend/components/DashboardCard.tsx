@@ -5,9 +5,8 @@ import { Pokemon } from "@/app/dashboard/page";
 import { MdModeEditOutline, MdOutlineDelete } from "react-icons/md";
 import { Progress } from "./ui/progress";
 import { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { pokeApi } from "@/lib/api";
-import { useRouter } from "next/router";
 
 export interface DashboardCardProps {
     pokemon: Pokemon,
@@ -16,8 +15,9 @@ export interface DashboardCardProps {
 }
 
 export default function DashboardCard({ pokemon, userId, handleDelete }: DashboardCardProps) {
-
+    const router = useRouter();
     const [pokemonPicture, setPokemonPicture] = useState<string | null>(null);
+
     const isOwner = userId && pokemon.createdBy && String(userId) === String(pokemon.createdBy);
     useEffect(() => {
         async function getPokemonPicture() {
@@ -90,8 +90,9 @@ export default function DashboardCard({ pokemon, userId, handleDelete }: Dashboa
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            redirect(`/pokemon/edit/${pokemon.id}`);
+                            router.push(`/pokemon/edit/${pokemon.id}`);
                         }}
+
                         className="pokemon-action-btn flex-1 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-green-500 text-xs flex items-center justify-center gap-2 transition-colors"
                     >
                         <MdModeEditOutline size={16} /> Editar

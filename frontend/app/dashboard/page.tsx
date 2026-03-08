@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 
 import { Progress } from "@/components/ui/progress";
 import DashboardCard from "@/components/DashboardCard";
+import { ConfirmModal } from "@/components/ConfirmModal";
 
 export interface Pokemon {
   id: string | number;
@@ -26,6 +27,8 @@ export default function DashboardPage() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [pokemonToDelete, setPokemonToDelete] = useState<string | number | null>(null);
 
   const userId = getUserId();
 
@@ -57,22 +60,30 @@ export default function DashboardPage() {
     }
   }
 
-  async function handleDelete(e: React.MouseEvent, id: string | number) {
+  function handleDeleteClick(e: React.MouseEvent, id: string | number) {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm("Tem certeza que deseja deletar este Pokémon?")) return;
+    setPokemonToDelete(id);
+    setIsDeleteModalOpen(true);
+  }
+
+  async function handleConfirmDelete() {
+    if (!pokemonToDelete) return;
 
     try {
-      await api(`/pokemon/${id}`, {
+      await api(`/pokemon/${pokemonToDelete}`, {
         method: "DELETE",
         auth: true,
       });
       // Remove from UI
-      setPokemons((prev) => prev.filter((p) => p.id !== id));
+      setPokemons((prev) => prev.filter((p) => p.id !== pokemonToDelete));
     } catch (err) {
       alert(err instanceof ApiRequestError ? err.message : "Erro ao deletar Pokémon");
+    } finally {
+      setPokemonToDelete(null);
     }
   }
+
 
   if (authLoading) {
     return <div style={{ minHeight: "100vh", background: "var(--bg-base)" }} />;
@@ -125,18 +136,26 @@ export default function DashboardPage() {
           <div className="pokemon-grid">
             {pokemons.map((pokemon) => {
               return (
-                <>
-                  <DashboardCard
-                    pokemon={pokemon}
-                    userId={userId}
-                    handleDelete={handleDelete}
-                  />
-                </>
+                <DashboardCard
+                  key={pokemon.id}
+                  pokemon={pokemon}
+                  userId={userId}
+                  handleDelete={handleDeleteClick}
+                />
               )
             })}
           </div>
         )}
       </main>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Deletar Pokémon"
+        description="Tem certeza que deseja deletar este Pokémon? Esta ação não pode ser desfeita."
+      />
     </div>
   );
 }
+
