@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/Navbar";
 import { redirect } from "next/navigation";
 
+import { Progress } from "@/components/ui/progress";
+
 export interface Pokemon {
   id: string | number;
   name: string;
@@ -41,8 +43,6 @@ export default function DashboardPage() {
     try {
       setLoading(true);
       setError("");
-      // Using generic pokemon list endpoint. We don't need auth for GET /pokemon based on docs
-      // "Pokémon list is global (shared)."
       const data = await api<Pokemon[]>("/pokemon", { auth: true });
       setPokemons(data || []);
     } catch (err) {
@@ -56,7 +56,9 @@ export default function DashboardPage() {
     }
   }
 
-  async function handleDelete(id: string | number) {
+  async function handleDelete(e: React.MouseEvent, id: string | number) {
+    e.preventDefault();
+    e.stopPropagation();
     if (!confirm("Tem certeza que deseja deletar este Pokémon?")) return;
 
     try {
@@ -105,7 +107,17 @@ export default function DashboardPage() {
         {loading ? (
           <div className="pokemon-grid">
             {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="skeleton-card" />
+              <div key={n} className="pokemon-card animate-pulse">
+                <div className="flex justify-between mb-4">
+                  <div className="h-6 w-24 bg-white/10 rounded" />
+                  <div className="h-6 w-12 bg-white/10 rounded-full" />
+                </div>
+                <div className="aspect-square w-32 mx-auto bg-white/5 rounded-full mb-4" />
+                <div className="space-y-3">
+                  <div className="h-4 bg-white/10 rounded w-full" />
+                  <div className="h-4 bg-white/10 rounded w-2/3" />
+                </div>
+              </div>
             ))}
           </div>
         ) : pokemons.length === 0 ? (
@@ -118,11 +130,11 @@ export default function DashboardPage() {
         ) : (
           <div className="pokemon-grid">
             {pokemons.map((pokemon) => {
-              // Convert both to string for reliable comparison
               const isOwner = userId && pokemon.createdBy && String(userId) === String(pokemon.createdBy);
+              const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokedexNumber}.png`;
 
               return (
-                <article key={pokemon.id} className="pokemon-card">
+                <Link key={pokemon.id} href={`/pokemon/${pokemon.id}`} className="pokemon-card block">
                   <div className="pokemon-card-header">
                     <div>
                       <h2 className="pokemon-name">{pokemon.name}</h2>
@@ -131,42 +143,62 @@ export default function DashboardPage() {
                     <span className="pokemon-number">#{String(pokemon.pokedexNumber).padStart(3, "0")}</span>
                   </div>
 
+                  <div className="relative group flex justify-center py-2">
+                    <div className="absolute inset-0 bg-red/5 rounded-full blur-2xl group-hover:bg-red/10 transition-colors" />
+                    <img 
+                      src={spriteUrl} 
+                      alt={pokemon.name} 
+                      className="w-32 h-32 object-contain relative z-10 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
+                      }}
+                    />
+                  </div>
+
                   <div className="pokemon-stats">
-                    <div className="stat-item">
-                      <span className="stat-label">Nível</span>
-                      <span className="stat-value">Lv. {pokemon.level}</span>
+                    <div className="stat-item flex justify-between items-center mb-1">
+                      <span className="stat-label text-xs uppercase text-muted-foreground font-bold">Nível</span>
+                      <span className="stat-value font-bold text-accent">Lv. {pokemon.level}</span>
                     </div>
-                    <div className="stat-item">
-                      <span className="stat-label">HP Máximo</span>
-                      <span className="stat-value">{pokemon.hp} HP</span>
+                    
+                    <div className="space-y-1 mt-3">
+                      <div className="flex justify-between text-[10px] items-center px-1">
+                        <span className="uppercase font-bold text-muted-foreground">HP Mínimo</span>
+                        <span className="font-bold text-primary">{pokemon.hp} / {pokemon.hp} HP</span>
+                      </div>
+                      <Progress value={100} className="h-1.5 bg-black/40" />
                     </div>
                   </div>
 
                   {isOwner && (
-                    <div className="pokemon-actions">
-                      <Link href={`/pokemon/edit/${pokemon.id}`} className="pokemon-action-btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <div className="pokemon-actions flex gap-2 mt-4">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.location.href = `/pokemon/edit/${pokemon.id}`;
+                        }}
+                        className="pokemon-action-btn flex-1 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-xs flex items-center justify-center gap-2 transition-colors"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M12 20h9" />
                           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                         </svg>
                         Editar
-                      </Link>
+                      </button>
                       <button
-                        onClick={() => handleDelete(pokemon.id)}
-                        className="pokemon-action-btn pokemon-action-btn--delete"
-                        aria-label="Deletar Pokémon"
+                        onClick={(e) => handleDelete(e, pokemon.id)}
+                        className="pokemon-action-btn flex-1 py-2 rounded-lg bg-red/10 border border-red/20 hover:bg-red/20 text-red text-xs flex items-center justify-center gap-2 transition-colors"
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <polyline points="3 6 5 6 21 6" />
                           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                          <line x1="10" y1="11" x2="10" y2="17" />
-                          <line x1="14" y1="11" x2="14" y2="17" />
                         </svg>
                         Deletar
                       </button>
                     </div>
                   )}
-                </article>
+                </Link>
               );
             })}
           </div>

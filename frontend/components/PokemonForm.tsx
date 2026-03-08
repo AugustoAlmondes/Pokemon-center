@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import { z } from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const pokemonSchema = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -13,6 +22,12 @@ const pokemonSchema = z.object({
 
 type PokemonFormData = z.infer<typeof pokemonSchema>;
 type FieldErrors = Partial<Record<keyof PokemonFormData, string>>;
+
+interface ConflictData {
+  field: string;
+  expected: string;
+  actual: string;
+}
 
 interface Props {
   initialData?: Partial<PokemonFormData>;
@@ -33,12 +48,56 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
   });
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [conflicts, setConflicts] = useState<ConflictData[]>([]);
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setFields((prev) => ({ ...prev, [name]: value }));
     if (fieldErrors[name as keyof PokemonFormData]) {
       setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  }
+
+  async function validateWithPokeAPI(data: PokemonFormData) {
+    try {
+      setIsValidating(true);
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.name.toLowerCase().trim()}`);
+      
+      if (!response.ok) {
+        // Pokemon not found in PokeAPI, proceed without conflicts
+        return null;
+      }
+
+      const pokemonData = await response.json();
+      const detectedConflicts: ConflictData[] = [];
+
+      // Check Types
+      const apiTypes = pokemonData.types.map((t: any) => t.type.name).join(", ");
+      if (!data.type.toLowerCase().split(",").some(t => apiTypes.toLowerCase().includes(t.trim()))) {
+          detectedConflicts.push({
+            field: "Tipo",
+            expected: apiTypes,
+            actual: data.type
+          });
+      }
+
+      // Check Pokedex Number
+      if (pokemonData.id !== data.pokedexNumber) {
+        detectedConflicts.push({
+          field: "Número da Pokédex",
+          expected: String(pokemonData.id),
+          actual: String(data.pokedexNumber)
+        });
+      }
+
+      return detectedConflicts.length > 0 ? detectedConflicts : null;
+    } catch (error) {
+      console.error("Error validating with PokeAPI:", error);
+      return null;
+    } finally {
+      setIsValidating(false);
     }
   }
 
@@ -56,8 +115,19 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
       return;
     }
 
-    await onSubmit(result.data);
+    const detectedConflicts = await validateWithPokeAPI(result.data);
+    if (detectedConflicts) {
+      setConflicts(detectedConflicts);
+      setShowConflictModal(true);
+    } else {
+      await onSubmit(result.data);
+    }
   }
+
+  const handleProceed = async () => {
+    setShowConflictModal(false);
+    await onSubmit(fields);
+  };
 
   return (
     <div className="login-card" style={{ maxWidth: "600px", margin: "0 auto" }}>
@@ -182,19 +252,71 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
         <button
           type="submit"
           className="submit-btn"
-          disabled={isLoading}
+          disabled={isLoading || isValidating}
           style={{ marginTop: "1rem" }}
         >
-          {isLoading ? (
+          {isLoading || isValidating ? (
             <>
               <span className="spinner" />
-              Salvando...
+              {isValidating ? "Validando..." : "Salvando..."}
             </>
           ) : (
             submitLabel
           )}
         </button>
       </form>
+
+      <Dialog open={showConflictModal} onOpenChange={setShowConflictModal}>
+        <DialogContent className="bg-surface border-border text-primary backdrop-blur-xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2 text-yellow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              Conflito Detectado
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground pt-2">
+              Os dados informados não coincidem com as informações da PokéAPI. Deseja prosseguir mesmo assim?
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {conflicts.map((conflict, idx) => (
+              <div key={idx} className="p-3 bg-black/20 rounded-lg border border-white/5">
+                <p className="text-sm font-semibold text-accent mb-1">{conflict.field}</p>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <p className="text-muted-foreground mb-1">Esperado (PokeAPI):</p>
+                    <p className="text-primary font-medium">{conflict.expected}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground mb-1">Informado:</p>
+                    <p className="text-primary font-medium">{conflict.actual}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowConflictModal(false)}
+              className="bg-transparent border-white/10 hover:bg-white/5 text-primary"
+            >
+              Voltar e Corrigir
+            </Button>
+            <Button 
+              onClick={handleProceed}
+              className="bg-red hover:bg-red/80 text-white border-none"
+            >
+              Prosseguir Assim Mesmo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
