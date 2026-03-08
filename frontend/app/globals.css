@@ -723,7 +723,6 @@ body {
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.1;
-  margin-bottom: 0.25rem;
 }
 
 .pokemon-number {
@@ -813,6 +812,7 @@ body {
 }
 
 .pokemon-action-btn--delete {
+  cursor: pointer;
   color: #f87171;
   background: rgba(239, 68, 68, 0.1);
 }

@@ -1,4 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const POKEAPI_BASE_URL = "https://pokeapi.co/api/v2";
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
@@ -25,20 +26,6 @@ export class ApiRequestError extends Error {
   }
 }
 
-/**
- * Wrapper genérico de fetch para toda a aplicação.
- *
- * @example
- * // Sem autenticação
- * const data = await api<{ access_token: string }>("/auth/login", {
- *   method: "POST",
- *   body: { email, password },
- * });
- *
- * @example
- * // Com autenticação (Bearer token)
- * const pokemons = await api<Pokemon[]>("/pokemon", { auth: true });
- */
 export async function api<TResponse = unknown, TBody = unknown>(
   path: string,
   options: ApiOptions<TBody> = {}
@@ -73,14 +60,25 @@ export async function api<TResponse = unknown, TBody = unknown>(
       else if (Array.isArray(errBody?.message))
         message = errBody.message.join(", ");
     } catch {
-      // mantém a mensagem padrão
     }
 
     throw new ApiRequestError({ message, statusCode: response.status });
   }
 
-  // 204 No Content — retorna undefined sem tentar parsear JSON
   if (response.status === 204) return undefined as TResponse;
 
   return response.json() as Promise<TResponse>;
 }
+
+export async function pokeApi<TResponse = any>(path: string): Promise<TResponse> {
+  const url = path.startsWith("http") ? path : `${POKEAPI_BASE_URL}${path}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`PokeAPI error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json() as Promise<TResponse>;
+}
+

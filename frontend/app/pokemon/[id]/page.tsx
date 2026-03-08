@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { api, ApiRequestError } from "@/lib/api";
+import { api, ApiRequestError, pokeApi } from "@/lib/api";
 import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { Progress } from "@/components/ui/progress";
 import type { Pokemon } from "@/app/dashboard/page";
+import { typeColorMap } from "./constants";
+import { RiLoader2Fill } from "react-icons/ri";
+import { BsArrowBarLeft } from "react-icons/bs";
+import { CgArrowLeft } from "react-icons/cg";
 
 interface PokeAPIData {
   sprites: {
@@ -56,35 +60,30 @@ export default function PokemonDetailPage() {
       setPokemon(data);
 
       // Fetch PokeAPI data
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.name.toLowerCase().trim()}`);
-      if (response.ok) {
-        const pData = await response.json();
+      try {
+        const pData = await pokeApi<PokeAPIData>(`/pokemon/${data.name.toLowerCase().trim()}`);
         setPokeApiData(pData);
 
         // Fetch Evolutions
-        const speciesRes = await fetch(pData.species.url);
-        if (speciesRes.ok) {
-          const speciesData = await speciesRes.json();
-          const evoRes = await fetch(speciesData.evolution_chain.url);
-          if (evoRes.ok) {
-            const evoData = await evoRes.json();
-            const chain: string[] = [];
-            let current = evoData.chain;
-            
-            while (current) {
-              chain.push(current.species.name);
-              current = current.evolves_to[0];
-            }
-            
-            // Filter out current pokemon and previous ones if we want "next evolutions"
-            const currentIndex = chain.indexOf(data.name.toLowerCase());
-            if (currentIndex !== -1) {
-              setEvolutions(chain.slice(currentIndex + 1));
-            } else {
-                setEvolutions(chain);
-            }
-          }
+        const speciesData = await pokeApi<any>(pData.species.url);
+        const evoData = await pokeApi<any>(speciesData.evolution_chain.url);
+        
+        const chain: string[] = [];
+        let current = evoData.chain;
+        
+        while (current) {
+          chain.push(current.species.name);
+          current = current.evolves_to[0];
         }
+        
+        const currentIndex = chain.indexOf(data.name.toLowerCase());
+        if (currentIndex !== -1) {
+          setEvolutions(chain.slice(currentIndex + 1));
+        } else {
+            setEvolutions(chain);
+        }
+      } catch (pokeErr) {
+        console.error("PokeAPI error or mapping issue:", pokeErr);
       }
     } catch (err) {
       setError("Pokémon não encontrado.");
@@ -98,7 +97,7 @@ export default function PokemonDetailPage() {
       <div className="min-h-screen bg-bg-base">
         <Navbar />
         <div className="flex items-center justify-center pt-20">
-          <span className="spinner w-8 h-8 border-4" />
+          <img src="/gif/loading.gif" alt="loading" className="w-20 h-20" />
         </div>
       </div>
     );
@@ -117,27 +116,6 @@ export default function PokemonDetailPage() {
       </div>
     );
   }
-
-  const typeColorMap: Record<string, string> = {
-    fire: "from-orange-500 to-red-600",
-    water: "from-blue-400 to-blue-600",
-    grass: "from-green-400 to-green-600",
-    electric: "from-yellow-300 to-yellow-500",
-    psychic: "from-pink-400 to-purple-600",
-    ice: "from-cyan-200 to-blue-300",
-    dragon: "from-indigo-500 to-purple-800",
-    dark: "from-gray-700 to-black",
-    fairy: "from-pink-300 to-pink-500",
-    normal: "from-gray-300 to-gray-500",
-    fighting: "from-red-700 to-red-900",
-    poison: "from-purple-500 to-purple-900",
-    ground: "from-yellow-600 to-yellow-800",
-    flying: "from-indigo-300 to-indigo-500",
-    bug: "from-lime-400 to-lime-600",
-    rock: "from-stone-500 to-stone-700",
-    ghost: "from-purple-800 to-indigo-950",
-    steel: "from-slate-400 to-slate-600",
-  };
 
   const primaryType = pokeApiData?.types[0]?.type.name || pokemon.type.toLowerCase().split(",")[0].trim();
   const gradientClass = typeColorMap[primaryType] || "from-gray-700 to-gray-900";
@@ -163,9 +141,7 @@ export default function PokemonDetailPage() {
            )}
 
            <Link href="/dashboard" className="absolute top-6 left-6 z-20 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm transition-colors">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
+              <CgArrowLeft size={24} />
            </Link>
         </div>
 
@@ -242,17 +218,12 @@ export default function PokemonDetailPage() {
                                 <div className="bg-bg-surface backdrop-blur-xl border border-border p-6 rounded-2xl">
                                     <h3 className="text-xs uppercase font-bold text-accent mb-4 tracking-widest">Próximas Evoluções</h3>
                                     <div className="flex items-center gap-4">
-                                        {evolutions.map((evo, idx) => (
+                                        {evolutions.map((evo) => (
                                             <div key={evo} className="flex items-center gap-4">
                                                 <div className="group relative">
                                                     <div className="absolute -inset-2 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                                                     <p className="relative capitalize bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-semibold text-primary">{evo}</p>
                                                 </div>
-                                                {idx < evolutions.length - 1 && (
-                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground">
-                                                        <path d="M5 12h14M12 5l7 7-7 7" />
-                                                    </svg>
-                                                )}
                                             </div>
                                         ))}
                                     </div>
@@ -261,7 +232,7 @@ export default function PokemonDetailPage() {
                         </>
                     ) : (
                         <div className="bg-bg-surface backdrop-blur-xl border border-border p-8 rounded-2xl text-center">
-                            <p className="text-muted-foreground italic">Este Pokémon foi adicionado manualmente e não possui registros oficiais no banco de dados PokeAPI para informações adicionais.</p>
+                            <p className="text-muted-foreground italic">Este Pokémon foi adicionado manualmente e não possui registros oficiais no banco de dados</p>
                         </div>
                     )}
                 </div>
