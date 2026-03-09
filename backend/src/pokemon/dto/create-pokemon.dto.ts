@@ -9,6 +9,10 @@ export class CreatePokemonDto {
   @IsNotEmpty()
   type: string;
 
+  @IsString()
+  @IsOptional()
+  typeTwo?: string;
+
   @IsInt()
   @Min(1)
   @Max(100)

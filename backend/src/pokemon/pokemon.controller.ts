@@ -18,7 +18,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('pokemon')
 export class PokemonController {
 
-  constructor(private readonly pokemonService: PokemonService) {}
+  constructor(private readonly pokemonService: PokemonService) { }
 
   @Post()
   create(@Body() createPokemonDto: CreatePokemonDto, @Req() req: any) {
