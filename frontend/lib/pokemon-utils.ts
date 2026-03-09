@@ -23,3 +23,29 @@ export const translatePokemonType = (type: string): string => {
   const normalized = type.toLowerCase().trim();
   return translations[normalized] || normalized;
 };
+
+export const getPokemonTypePT = (typeEN: string): string => {
+  const translations: Record<string, string> = {
+    "fire": "fogo",
+    "water": "água",
+    "grass": "grama",
+    "electric": "elétrico",
+    "ice": "gelo",
+    "fighting": "lutador",
+    "poison": "veneno",
+    "ground": "terra",
+    "flying": "voador",
+    "psychic": "psíquico",
+    "bug": "inseto",
+    "rock": "pedra",
+    "ghost": "fantasma",
+    "dragon": "dragão",
+    "dark": "sombrio",
+    "steel": "aço",
+    "fairy": "fada",
+    "normal": "normal",
+  };
+
+  const normalized = typeEN.toLowerCase().trim();
+  return translations[normalized] || normalized;
+};

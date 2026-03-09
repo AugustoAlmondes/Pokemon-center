@@ -1,5 +1,5 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-const POKEAPI_BASE_URL = "https://pokeapi.co/api/v2";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3030";
+const POKEAPI_BASE_URL = process.env.NEXT_PUBLIC_POKEAPI_URL ?? "https://pokeapi.co/api/v2";
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
@@ -76,7 +76,7 @@ export async function pokeApi<TResponse = any>(path: string): Promise<TResponse>
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(`PokeAPI error: ${response.status} ${response.statusText}`);
+    throw new Error(`error: ${response.status} ${response.statusText}`);
   }
 
   return response.json() as Promise<TResponse>;

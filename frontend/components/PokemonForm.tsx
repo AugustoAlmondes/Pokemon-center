@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { MdErrorOutline, MdCheckCircleOutline, MdWarning } from "react-icons/md";
-import { translatePokemonType } from "@/lib/pokemon-utils";
+import { translatePokemonType, getPokemonTypePT } from "@/lib/pokemon-utils";
 
 const pokemonSchema = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -41,12 +41,20 @@ interface Props {
 }
 
 export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, serverError, successMessage }: Props) {
-  const [fields, setFields] = useState<PokemonFormData>({
-    name: initialData?.name || "",
-    type: initialData?.type || "",
-    level: initialData?.level || 1,
-    hp: initialData?.hp || 10,
-    pokedexNumber: initialData?.pokedexNumber || 1,
+  const [fields, setFields] = useState<PokemonFormData>(() => {
+    const initialType = initialData?.type || "";
+    const translatedType = initialType
+      .split(",")
+      .map((t) => getPokemonTypePT(t.trim()))
+      .join(", ");
+
+    return {
+      name: initialData?.name || "",
+      type: translatedType,
+      level: initialData?.level || 1,
+      hp: initialData?.hp || 10,
+      pokedexNumber: initialData?.pokedexNumber || 1,
+    };
   });
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -100,7 +108,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
 
       return detectedConflicts.length > 0 ? detectedConflicts : null;
     } catch (error) {
-      console.error("Error validating with PokeAPI:", error);
+      console.error("Error validating:", error);
       return null;
     } finally {
       setIsValidating(false);
@@ -295,7 +303,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
                 <p className="text-sm font-semibold text-accent mb-1">{conflict.field}</p>
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <p className="text-muted-foreground mb-1">Esperado (PokeAPI):</p>
+                    <p className="text-muted-foreground mb-1">Esperado:</p>
                     <p className="text-primary font-medium">{conflict.expected}</p>
                   </div>
                   <div>

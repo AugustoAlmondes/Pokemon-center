@@ -126,9 +126,9 @@ export default function PokemonDetailPage() {
       
       <main className="max-w-4xl mx-auto pb-20 overflow-hidden">
         {/* Top Gradient Header */}
-        <div className={`relative h-80 w-full bg-gradient-to-br ${gradientClass} flex items-center justify-center overflow-hidden`}>
+        <div className={`relative h-80 w-full bg-linear-to-br ${gradientClass} flex items-center justify-center overflow-hidden`}>
            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-bg-base to-transparent" />
+           <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-bg-base to-transparent" />
            
            {pokeApiData?.sprites.other["official-artwork"].front_default ? (
              <img 
