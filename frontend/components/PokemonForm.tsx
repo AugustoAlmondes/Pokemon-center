@@ -74,7 +74,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
     try {
       setIsValidating(true);
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.name.toLowerCase().trim()}`);
-      
+
       if (!response.ok) {
         // Pokemon not found in PokeAPI, proceed without conflicts
         return null;
@@ -85,16 +85,16 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
 
       // Check Types
       const apiTypes = pokemonData.types.map((t: any) => t.type.name).join(", ");
-      
+
       // Translate the user input before comparison
       const translatedUserType = data.type.split(",").map(t => translatePokemonType(t.trim())).join(", ");
 
       if (!translatedUserType.toLowerCase().split(",").some(t => apiTypes.toLowerCase().includes(t.trim()))) {
-          detectedConflicts.push({
-            field: "Tipo",
-            expected: apiTypes,
-            actual: data.type
-          });
+        detectedConflicts.push({
+          field: "Tipo",
+          expected: apiTypes,
+          actual: data.type
+        });
       }
 
       // Check Pokedex Number
@@ -130,7 +130,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
     }
 
     const detectedConflicts = await validateWithPokeAPI(result.data);
-    
+
     // Prepare data for submission (translating types)
     const finalData = {
       ...result.data,
@@ -141,7 +141,8 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
       setConflicts(detectedConflicts);
       setShowConflictModal(true);
     } else {
-      await onSubmit(finalData);
+      console.log("Submitting data:", finalData);
+      await onSubmit({...finalData, pokedexNumber: Number(finalData.pokedexNumber)});
     }
   }
 
@@ -151,7 +152,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
       ...fields,
       type: fields.type.split(",").map(t => translatePokemonType(t.trim())).join(", ")
     };
-    await onSubmit(finalData);
+    await onSubmit({...finalData, pokedexNumber: Number(finalData.pokedexNumber)});
   };
 
 
@@ -165,7 +166,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
       )}
 
       {successMessage && (
-         <div className="success-alert" role="alert" style={{ background: "rgba(34, 197, 94, 0.1)", border: "1px solid rgba(34, 197, 94, 0.3)", color: "#4ade80", padding: "1rem", borderRadius: "8px", marginBottom: "1.25rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <div className="success-alert" role="alert" style={{ background: "rgba(34, 197, 94, 0.1)", border: "1px solid rgba(34, 197, 94, 0.3)", color: "#4ade80", padding: "1rem", borderRadius: "8px", marginBottom: "1.25rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <MdCheckCircleOutline size={18} />
           {successMessage}
         </div>
@@ -173,7 +174,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
 
       <form onSubmit={handleSubmit} className="login-form" noValidate>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-          
+
           {/* Nome */}
           <div className="field-group" style={{ gridColumn: "1 / -1" }}>
             <label htmlFor="name" className="field-label">Nome do Pokémon</label>
@@ -316,14 +317,14 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
           </div>
 
           <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setShowConflictModal(false)}
               className="bg-transparent border-white/10 hover:bg-white/5 text-primary cursor-pointer"
             >
               Voltar e Corrigir
             </Button>
-            <Button 
+            <Button
               onClick={handleProceed}
               className="bg-red hover:bg-red/80 text-white border-white/10 hover:bg-white/5 cursor-pointer"
             >
