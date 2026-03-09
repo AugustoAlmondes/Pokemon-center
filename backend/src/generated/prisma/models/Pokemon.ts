@@ -42,6 +42,7 @@ export type PokemonMinAggregateOutputType = {
   id: string | null
   name: string | null
   type: string | null
+  typeTwo: string | null
   level: number | null
   hp: number | null
   pokedexNumber: number | null
@@ -53,6 +54,7 @@ export type PokemonMaxAggregateOutputType = {
   id: string | null
   name: string | null
   type: string | null
+  typeTwo: string | null
   level: number | null
   hp: number | null
   pokedexNumber: number | null
@@ -64,6 +66,7 @@ export type PokemonCountAggregateOutputType = {
   id: number
   name: number
   type: number
+  typeTwo: number
   level: number
   hp: number
   pokedexNumber: number
@@ -89,6 +92,7 @@ export type PokemonMinAggregateInputType = {
   id?: true
   name?: true
   type?: true
+  typeTwo?: true
   level?: true
   hp?: true
   pokedexNumber?: true
@@ -100,6 +104,7 @@ export type PokemonMaxAggregateInputType = {
   id?: true
   name?: true
   type?: true
+  typeTwo?: true
   level?: true
   hp?: true
   pokedexNumber?: true
@@ -111,6 +116,7 @@ export type PokemonCountAggregateInputType = {
   id?: true
   name?: true
   type?: true
+  typeTwo?: true
   level?: true
   hp?: true
   pokedexNumber?: true
@@ -209,6 +215,7 @@ export type PokemonGroupByOutputType = {
   id: string
   name: string
   type: string
+  typeTwo: string | null
   level: number
   hp: number
   pokedexNumber: number
@@ -243,6 +250,7 @@ export type PokemonWhereInput = {
   id?: Prisma.StringFilter<"Pokemon"> | string
   name?: Prisma.StringFilter<"Pokemon"> | string
   type?: Prisma.StringFilter<"Pokemon"> | string
+  typeTwo?: Prisma.StringNullableFilter<"Pokemon"> | string | null
   level?: Prisma.IntFilter<"Pokemon"> | number
   hp?: Prisma.IntFilter<"Pokemon"> | number
   pokedexNumber?: Prisma.IntFilter<"Pokemon"> | number
@@ -254,6 +262,7 @@ export type PokemonOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  typeTwo?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrder
   hp?: Prisma.SortOrder
   pokedexNumber?: Prisma.SortOrder
@@ -268,6 +277,7 @@ export type PokemonWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PokemonWhereInput | Prisma.PokemonWhereInput[]
   name?: Prisma.StringFilter<"Pokemon"> | string
   type?: Prisma.StringFilter<"Pokemon"> | string
+  typeTwo?: Prisma.StringNullableFilter<"Pokemon"> | string | null
   level?: Prisma.IntFilter<"Pokemon"> | number
   hp?: Prisma.IntFilter<"Pokemon"> | number
   pokedexNumber?: Prisma.IntFilter<"Pokemon"> | number
@@ -279,6 +289,7 @@ export type PokemonOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  typeTwo?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrder
   hp?: Prisma.SortOrder
   pokedexNumber?: Prisma.SortOrder
@@ -298,6 +309,7 @@ export type PokemonScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Pokemon"> | string
   name?: Prisma.StringWithAggregatesFilter<"Pokemon"> | string
   type?: Prisma.StringWithAggregatesFilter<"Pokemon"> | string
+  typeTwo?: Prisma.StringNullableWithAggregatesFilter<"Pokemon"> | string | null
   level?: Prisma.IntWithAggregatesFilter<"Pokemon"> | number
   hp?: Prisma.IntWithAggregatesFilter<"Pokemon"> | number
   pokedexNumber?: Prisma.IntWithAggregatesFilter<"Pokemon"> | number
@@ -309,6 +321,7 @@ export type PokemonCreateInput = {
   id?: string
   name: string
   type: string
+  typeTwo?: string | null
   level: number
   hp: number
   pokedexNumber: number
@@ -320,6 +333,7 @@ export type PokemonUncheckedCreateInput = {
   id?: string
   name: string
   type: string
+  typeTwo?: string | null
   level: number
   hp: number
   pokedexNumber: number
@@ -331,6 +345,7 @@ export type PokemonUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  typeTwo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.IntFieldUpdateOperationsInput | number
   hp?: Prisma.IntFieldUpdateOperationsInput | number
   pokedexNumber?: Prisma.IntFieldUpdateOperationsInput | number
@@ -342,6 +357,7 @@ export type PokemonUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  typeTwo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.IntFieldUpdateOperationsInput | number
   hp?: Prisma.IntFieldUpdateOperationsInput | number
   pokedexNumber?: Prisma.IntFieldUpdateOperationsInput | number
@@ -353,6 +369,7 @@ export type PokemonCreateManyInput = {
   id?: string
   name: string
   type: string
+  typeTwo?: string | null
   level: number
   hp: number
   pokedexNumber: number
@@ -364,6 +381,7 @@ export type PokemonUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  typeTwo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.IntFieldUpdateOperationsInput | number
   hp?: Prisma.IntFieldUpdateOperationsInput | number
   pokedexNumber?: Prisma.IntFieldUpdateOperationsInput | number
@@ -375,6 +393,7 @@ export type PokemonUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  typeTwo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.IntFieldUpdateOperationsInput | number
   hp?: Prisma.IntFieldUpdateOperationsInput | number
   pokedexNumber?: Prisma.IntFieldUpdateOperationsInput | number
@@ -386,6 +405,7 @@ export type PokemonCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  typeTwo?: Prisma.SortOrder
   level?: Prisma.SortOrder
   hp?: Prisma.SortOrder
   pokedexNumber?: Prisma.SortOrder
@@ -403,6 +423,7 @@ export type PokemonMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  typeTwo?: Prisma.SortOrder
   level?: Prisma.SortOrder
   hp?: Prisma.SortOrder
   pokedexNumber?: Prisma.SortOrder
@@ -414,6 +435,7 @@ export type PokemonMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  typeTwo?: Prisma.SortOrder
   level?: Prisma.SortOrder
   hp?: Prisma.SortOrder
   pokedexNumber?: Prisma.SortOrder
@@ -425,6 +447,10 @@ export type PokemonSumOrderByAggregateInput = {
   level?: Prisma.SortOrder
   hp?: Prisma.SortOrder
   pokedexNumber?: Prisma.SortOrder
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -441,6 +467,7 @@ export type PokemonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   name?: boolean
   type?: boolean
+  typeTwo?: boolean
   level?: boolean
   hp?: boolean
   pokedexNumber?: boolean
@@ -452,6 +479,7 @@ export type PokemonSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   type?: boolean
+  typeTwo?: boolean
   level?: boolean
   hp?: boolean
   pokedexNumber?: boolean
@@ -463,6 +491,7 @@ export type PokemonSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   type?: boolean
+  typeTwo?: boolean
   level?: boolean
   hp?: boolean
   pokedexNumber?: boolean
@@ -474,6 +503,7 @@ export type PokemonSelectScalar = {
   id?: boolean
   name?: boolean
   type?: boolean
+  typeTwo?: boolean
   level?: boolean
   hp?: boolean
   pokedexNumber?: boolean
@@ -481,7 +511,7 @@ export type PokemonSelectScalar = {
   createdAt?: boolean
 }
 
-export type PokemonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "level" | "hp" | "pokedexNumber" | "createdBy" | "createdAt", ExtArgs["result"]["pokemon"]>
+export type PokemonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "typeTwo" | "level" | "hp" | "pokedexNumber" | "createdBy" | "createdAt", ExtArgs["result"]["pokemon"]>
 
 export type $PokemonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Pokemon"
@@ -490,6 +520,7 @@ export type $PokemonPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     name: string
     type: string
+    typeTwo: string | null
     level: number
     hp: number
     pokedexNumber: number
@@ -921,6 +952,7 @@ export interface PokemonFieldRefs {
   readonly id: Prisma.FieldRef<"Pokemon", 'String'>
   readonly name: Prisma.FieldRef<"Pokemon", 'String'>
   readonly type: Prisma.FieldRef<"Pokemon", 'String'>
+  readonly typeTwo: Prisma.FieldRef<"Pokemon", 'String'>
   readonly level: Prisma.FieldRef<"Pokemon", 'Int'>
   readonly hp: Prisma.FieldRef<"Pokemon", 'Int'>
   readonly pokedexNumber: Prisma.FieldRef<"Pokemon", 'Int'>

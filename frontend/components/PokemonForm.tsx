@@ -10,13 +10,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { MdErrorOutline, MdCheckCircleOutline, MdWarning } from "react-icons/md";
-import { translatePokemonType, getPokemonTypePT } from "@/lib/pokemon-utils";
+import { getPokemonTypePT } from "@/lib/pokemon-utils";
+import { POKEMON_TYPES } from "@/app/pokemon/[id]/constants";
 
 const pokemonSchema = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
   type: z.string().min(2, "O tipo deve ter pelo menos 2 caracteres."),
+  typeTwo: z.string().optional(),
   level: z.coerce.number().min(1, "O nível deve ser no mínimo 1.").max(100, "O nível máximo é 100."),
   hp: z.coerce.number().min(1, "O HP deve ser no mínimo 1."),
   pokedexNumber: z.coerce.number().min(1, "O número da Pokédex deve ser no mínimo 1."),
@@ -42,15 +51,10 @@ interface Props {
 
 export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, serverError, successMessage }: Props) {
   const [fields, setFields] = useState<PokemonFormData>(() => {
-    const initialType = initialData?.type || "";
-    const translatedType = initialType
-      .split(",")
-      .map((t) => getPokemonTypePT(t.trim()))
-      .join(", ");
-
     return {
       name: initialData?.name || "",
-      type: translatedType,
+      type: initialData?.type || "",
+      typeTwo: initialData?.typeTwo || "",
       level: initialData?.level || 1,
       hp: initialData?.hp || 10,
       pokedexNumber: initialData?.pokedexNumber || 1,
@@ -70,13 +74,20 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
     }
   }
 
+  function handleSelectChange(name: string, value: string) {
+    const finalValue = value === "none" ? "" : value;
+    setFields((prev) => ({ ...prev, [name]: finalValue }));
+    if (fieldErrors[name as keyof PokemonFormData]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  }
+
   async function validateWithPokeAPI(data: PokemonFormData) {
     try {
       setIsValidating(true);
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.name.toLowerCase().trim()}`);
 
       if (!response.ok) {
-        // Pokemon not found in PokeAPI, proceed without conflicts
         return null;
       }
 
@@ -84,16 +95,17 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
       const detectedConflicts: ConflictData[] = [];
 
       // Check Types
-      const apiTypes = pokemonData.types.map((t: any) => t.type.name).join(", ");
+      const apiTypes = pokemonData.types.map((t: any) => t.type.name);
+      const userTypes = [data.type];
+      if (data.typeTwo) userTypes.push(data.typeTwo);
 
-      // Translate the user input before comparison
-      const translatedUserType = data.type.split(",").map(t => translatePokemonType(t.trim())).join(", ");
+      const typesMatch = userTypes.every(ut => apiTypes.includes(ut)) && apiTypes.length === userTypes.length;
 
-      if (!translatedUserType.toLowerCase().split(",").some(t => apiTypes.toLowerCase().includes(t.trim()))) {
-        detectedConflicts.push({
-          field: "Tipo",
-          expected: apiTypes,
-          actual: data.type
+      if (!typesMatch) {
+         detectedConflicts.push({
+          field: "Tipos",
+          expected: apiTypes.map((t: string) => getPokemonTypePT(t)).join(", "),
+          actual: userTypes.map((t: string) => getPokemonTypePT(t)).join(", ")
         });
       }
 
@@ -131,28 +143,17 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
 
     const detectedConflicts = await validateWithPokeAPI(result.data);
 
-    // Prepare data for submission (translating types)
-    const finalData = {
-      ...result.data,
-      type: result.data.type.split(",").map(t => translatePokemonType(t.trim())).join(", ")
-    };
-
     if (detectedConflicts) {
       setConflicts(detectedConflicts);
       setShowConflictModal(true);
     } else {
-      console.log("Submitting data:", finalData);
-      await onSubmit({...finalData, pokedexNumber: Number(finalData.pokedexNumber)});
+      await onSubmit({...result.data, pokedexNumber: Number(result.data.pokedexNumber)});
     }
   }
 
   const handleProceed = async () => {
     setShowConflictModal(false);
-    const finalData = {
-      ...fields,
-      type: fields.type.split(",").map(t => translatePokemonType(t.trim())).join(", ")
-    };
-    await onSubmit({...finalData, pokedexNumber: Number(finalData.pokedexNumber)});
+    await onSubmit({...fields, pokedexNumber: Number(fields.pokedexNumber)});
   };
 
 
@@ -194,22 +195,47 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
             {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
           </div>
 
-          {/* Tipo */}
-          <div className="field-group" style={{ gridColumn: "1 / -1" }}>
-            <label htmlFor="type" className="field-label">Tipo</label>
-            <div className="input-wrapper">
-              <input
-                id="type"
-                name="type"
-                type="text"
-                className={`field-input${fieldErrors.type ? " field-input--error" : ""}`}
-                style={{ paddingLeft: "1rem" }}
-                placeholder="Ex: Elétrico"
-                value={fields.type}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Tipo 1 */}
+          <div className="field-group">
+            <label htmlFor="type" className="field-label">Tipo Primário</label>
+            <Select 
+              value={fields.type} 
+              onValueChange={(val) => handleSelectChange("type", val)}
+            >
+              <SelectTrigger className={fieldErrors.type ? "border-red-500/50" : ""}>
+                <SelectValue placeholder="Selecione o tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                {POKEMON_TYPES.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {fieldErrors.type && <span className="field-error">{fieldErrors.type}</span>}
+          </div>
+
+          {/* Tipo 2 */}
+          <div className="field-group">
+            <label htmlFor="typeTwo" className="field-label">Tipo Secundário (Opcional)</label>
+            <Select 
+              value={fields.typeTwo} 
+              onValueChange={(val) => handleSelectChange("typeTwo", val)}
+            >
+              <SelectTrigger className={fieldErrors.typeTwo ? "border-red-500/50" : ""}>
+                <SelectValue placeholder="Nenhum" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Nenhum</SelectItem>
+                {POKEMON_TYPES.filter(t => t.value !== fields.type).map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {fieldErrors.typeTwo && <span className="field-error">{fieldErrors.typeTwo}</span>}
           </div>
 
           {/* Level */}

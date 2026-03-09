@@ -8,7 +8,7 @@ export const typeColorMap: Record<string, string> = {
     dragon: "from-indigo-500 to-purple-800",
     dark: "from-gray-700 to-black",
     fairy: "from-pink-300 to-pink-500",
-    normal: "from-gray-300 to-gray-500",
+    normal: "from-gray-300 to-gray-400",
     fighting: "from-red-700 to-red-900",
     poison: "from-purple-500 to-purple-900",
     ground: "from-yellow-600 to-yellow-800",
@@ -18,3 +18,25 @@ export const typeColorMap: Record<string, string> = {
     ghost: "from-purple-800 to-indigo-950",
     steel: "from-slate-400 to-slate-600",
 };
+
+export const POKEMON_TYPES = [
+    { value: "water", label: "Água" },
+    { value: "steel", label: "Aço" },
+    { value: "dragon", label: "Dragão" },
+    { value: "electric", label: "Elétrico" },
+    { value: "fairy", label: "Fada" },
+    { value: "ghost", label: "Fantasma" },
+    { value: "fire", label: "Fogo" },
+    { value: "ice", label: "Gelo" },
+    { value: "grass", label: "Grama" },
+    { value: "bug", label: "Inseto" },
+    { value: "fighting", label: "Lutador" },
+    { value: "normal", label: "Normal" },
+    { value: "rock", label: "Pedra" },
+    { value: "psychic", label: "Psíquico" },
+    { value: "dark", label: "Sombrio" },
+    { value: "ground", label: "Terra" },
+    { value: "poison", label: "Veneno" },
+    { value: "flying", label: "Voador" },
+
+];

@@ -86,6 +86,7 @@ export const PokemonScalarFieldEnum = {
   id: 'id',
   name: 'name',
   type: 'type',
+  typeTwo: 'typeTwo',
   level: 'level',
   hp: 'hp',
   pokedexNumber: 'pokedexNumber',
@@ -110,4 +111,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

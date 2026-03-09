@@ -7,6 +7,7 @@ import { Progress } from "./ui/progress";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pokeApi } from "@/lib/api";
+import { getPokemonTypePT, getTypeColor } from "@/lib/pokemon-utils";
 
 export interface DashboardCardProps {
     pokemon: Pokemon,
@@ -38,7 +39,7 @@ export default function DashboardCard({ pokemon, userId, handleDelete }: Dashboa
     return (
         <Link key={pokemon.id} href={`/pokemon/${pokemon.id}`} className="pokemon-card block">
             <div className="pokemon-card-header">
-                <div>
+                <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-center gap-2 mb-1">
                         <h2 className="pokemon-name">{pokemon.name}</h2>
                         {
@@ -47,7 +48,16 @@ export default function DashboardCard({ pokemon, userId, handleDelete }: Dashboa
                             )
                         }
                     </div>
-                    <span className="pokemon-type-badge">{pokemon.type}</span>
+                    <div className="flex flex-wrap justify-center gap-1">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${getTypeColor(pokemon.type)}`}>
+                            {getPokemonTypePT(pokemon.type)}
+                        </span>
+                        {pokemon.typeTwo && (
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${getTypeColor(pokemon.typeTwo)}`}>
+                                {getPokemonTypePT(pokemon.typeTwo)}
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <span className="pokemon-number">#{String(pokemon.pokedexNumber).padStart(3, "0")}</span>
             </div>

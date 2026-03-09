@@ -15,6 +15,7 @@ export interface Pokemon {
   id: string | number;
   name: string;
   type: string;
+  typeTwo?: string;
   level: number;
   hp: number;
   pokedexNumber: number;
