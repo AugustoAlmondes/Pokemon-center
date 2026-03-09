@@ -1,11 +1,12 @@
 import LogoPokebola from "@/components/LogoPokebola";
 import Link from "next/link";
 import Image from "next/image";
+import HeaderHero from "@/components/HeaderHero";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <main className="min-h-screen relative overflow-x-hidden">
-      {/* Ambient Decorative Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="orb orb-red" />
         <div className="orb orb-yellow" />
@@ -14,39 +15,9 @@ export default function Home() {
         <div className="pokeball-deco" />
       </div>
 
-      {/* Sticky Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-base/80 backdrop-blur-md border-b border-white/10">
-        <nav className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 no-underline group">
-            <div className="logo-icon w-8 h-8 m-0">
-              <LogoPokebola />
-            </div>
-            <span className="font-rajdhani font-bold text-xl uppercase tracking-wider text-primary group-hover:text-red transition-colors">
-              Pokémon Center
-            </span>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#descricao" className="text-sm font-medium text-muted hover:text-primary no-underline transition-colors uppercase tracking-widest">Descrição</a>
-            <a href="#funcionalidades" className="text-sm font-medium text-muted hover:text-primary no-underline transition-colors uppercase tracking-widest">Funcionalidades</a>
-            <a href="#tecnologias" className="text-sm font-medium text-muted hover:text-primary no-underline transition-colors uppercase tracking-widest">Tecnologias</a>
-            <a href="#demonstracao" className="text-sm font-medium text-muted hover:text-primary no-underline transition-colors uppercase tracking-widest">Telas</a>
-            <a href="#como-rodar" className="text-sm font-medium text-muted hover:text-primary no-underline transition-colors uppercase tracking-widest">Como Rodar</a>
-          </div>
+      <HeaderHero />
 
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-bold uppercase tracking-wider text-muted hover:text-primary no-underline transition-colors px-4">
-              Entrar
-            </Link>
-            <Link href="/register" className="submit-btn h-9 px-6 text-xs no-underline">
-              Começar
-            </Link>
-          </div>
-        </nav>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 z-10">
+      <section className="relative pt-60 pb-20 px-4 z-10">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red/10 border border-red/20 text-red text-[10px] font-bold uppercase tracking-[0.2em] mb-6 animate-pulse">
             Protocolo de Gestão de Pokémon v1.0
@@ -70,7 +41,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Descrição Section */}
       <section id="descricao" className="relative py-20 px-4 z-10 scroll-mt-16">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -105,11 +75,11 @@ export default function Home() {
             <div className="relative group">
               <div className="absolute -inset-1 bg-linear-to-r from-red to-yellow rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
               <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-                <Image 
-                  src="/images/image_2.png" 
-                  alt="Dashboard Preview" 
-                  width={600} 
-                  height={400} 
+                <Image
+                  src="/images/image_2.png"
+                  alt="Dashboard Preview"
+                  width={600}
+                  height={400}
                   className="w-full h-auto object-cover transform scale-100 group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-x-0 bottom-0 p-4 bg-linear-to-t from-black/80 to-transparent">
@@ -121,7 +91,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Funcionalidades Section */}
       <section id="funcionalidades" className="relative py-20 px-4 z-10 bg-white/2 border-y border-white/5 scroll-mt-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -130,16 +99,16 @@ export default function Home() {
               Funcionalidades
             </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 relative group">
               <div className="absolute -inset-1 bg-linear-to-r from-blue to-red rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
               <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-                <Image 
-                  src="/images/image_3.png" 
-                  alt="Cadastro de Pokemon" 
-                  width={600} 
-                  height={400} 
+                <Image
+                  src="/images/image_3.png"
+                  alt="Cadastro de Pokemon"
+                  width={600}
+                  height={400}
                   className="w-full h-auto object-cover"
                 />
               </div>
@@ -166,7 +135,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tecnologias Section */}
       <section id="tecnologias" className="relative py-20 px-4 z-10 scroll-mt-16">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
@@ -186,7 +154,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
               <div className="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm text-center">
                 <div className="text-3xl font-bold text-red mb-1">Frontend</div>
@@ -209,20 +177,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tela de Detalhes Section (Demonstração) */}
       <section id="demonstracao" className="relative py-20 px-4 z-10 bg-red/[0.02] scroll-mt-16">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-3xl font-rajdhani font-bold text-primary uppercase tracking-wider mb-2">Interfaces de Sistema</h2>
           <p className="text-muted mb-12">Visualização detalhada das informações técnicas de cada Pokémon.</p>
-          
+
           <div className="relative group max-w-4xl mx-auto">
             <div className="absolute -inset-4 bg-red/10 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
             <div className="relative rounded-3xl overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(239,68,68,0.15)] bg-slate-900">
-              <Image 
-                src="/images/image_1.png" 
-                alt="Informações do Pokemon" 
-                width={1200} 
-                height={800} 
+              <Image
+                src="/images/image_1.png"
+                alt="Informações do Pokemon"
+                width={1200}
+                height={800}
                 className="w-full h-auto shadow-2xl"
               />
             </div>
@@ -230,7 +197,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Como Rodar Section */}
       <section id="como-rodar" className="relative py-20 px-4 z-10 bg-white/3 border-t border-white/5 scroll-mt-16">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col items-center text-center mb-12">
@@ -264,24 +230,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="relative py-12 px-4 z-10 border-t border-white/5 text-center">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex flex-col items-center md:items-start gap-2">
-            <div className="flex items-center gap-2">
-              <LogoPokebola />
-              <span className="font-rajdhani font-bold text-lg uppercase tracking-wider">Pokémon Center</span>
-            </div>
-            <p className="text-xs text-muted uppercase tracking-[0.2em]">&copy; 2026 PokeCenter Protocol - Augusto Almondes</p>
-          </div>
-          
-          <div className="flex gap-6">
-            <a href="https://github.com/AugustoAlmondes" target="_blank" className="text-muted hover:text-primary transition-colors no-underline text-xs uppercase tracking-widest">GitHub</a>
-            <a href="https://www.linkedin.com/in/augusto-almondes/" target="_blank" className="text-muted hover:text-primary transition-colors no-underline text-xs uppercase tracking-widest">LinkedIn</a>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

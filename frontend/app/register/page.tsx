@@ -10,8 +10,8 @@ import LogoPokebola from "@/components/LogoPokebola";
 
 /* ── Schema Zod ─────────────────────────────── */
 const registerSchema = z.object({
-  name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
-  email: z.string().min(1, "O e-mail é obrigatório.").email("Informe um e-mail válido."),
+  name: z.string().min(4, "O nome deve ter pelo menos 4 caracteres."),
+  email: z.string().min(1, "O e-mail é obrigatório."),
   password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
 });
 
@@ -30,7 +30,7 @@ export default function RegisterPage() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setFields((prev) => ({ ...prev, [name]: value }));
-    
+
     if (fieldErrors[name as keyof RegisterFields]) {
       setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -108,7 +108,7 @@ export default function RegisterPage() {
 
         {isSuccess ? (
           <div className="success-alert" role="alert" style={{ textAlign: "center", padding: "2rem 0" }}>
-             <MdCheckCircleOutline size={48} style={{ margin: "0 auto 1rem", color: "#22c55e" }} />
+            <MdCheckCircleOutline size={48} style={{ margin: "0 auto 1rem", color: "#22c55e" }} />
             <h2 style={{ fontSize: "1.25rem", color: "#f0f0ff", marginBottom: "0.5rem" }}>Cadastro concluído!</h2>
             <p style={{ color: "var(--text-muted)" }}>Redirecionando para o login...</p>
           </div>

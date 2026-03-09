@@ -3,6 +3,7 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Icon } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         <link rel="icon" href="/images/pokebola_pixel.png" type="image/png"/>
       </head>
       <body>{children}</body>
+      <Footer/>
     </html>
   );
 }
