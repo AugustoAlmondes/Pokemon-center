@@ -111,13 +111,6 @@ Pokemon-center/
 
 ![Detalhes do Pokemon](images/image_1.png)
 
-# 🔮 Melhorias Futuras
-
-- [ ] Implementação de sistema de batalhas entre Pokémons cadastrados.
-- [ ] Upload de imagens personalizadas para os Pokémons.
-- [ ] Filtros avançados por tipo, nível e poder no Dashboard.
-- [ ] Exportação de relatórios em PDF/CSV.
-
 # 👤 Autor
 
 **Augusto Almondes**
