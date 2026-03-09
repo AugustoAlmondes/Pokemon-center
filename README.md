@@ -2,7 +2,7 @@
 
 Uma plataforma completa para gerenciamento de Pokémons, permitindo que treinadores registrem, visualizem e gerenciem sua coleção de forma eficiente e intuitiva.
 
-![Dashboard Preview](images/image_2.png)
+![Dashboard Preview](frontend/public/images/image_2.png)
 
 # 📝 Descrição
 
@@ -27,7 +27,7 @@ Aproveite para conferir o projeto em operação:
 - **📝 Gerenciamento Completo (CRUD):** Criação, leitura, atualização e exclusão de Pokémons.
 - **📱 Design Responsivo:** Experiência otimizada para dispositivos móveis e desktop.
 
-![Cadastro de Pokemon](images/image_3.png)
+![Cadastro de Pokemon](frontend/public/images/image_3.png)
 
 # 🛠️ Tecnologias Utilizadas
 
@@ -109,7 +109,7 @@ Pokemon-center/
 └── images/            # Assets de documentação
 ```
 
-![Detalhes do Pokemon](images/image_1.png)
+![Detalhes do Pokemon](frontend/public/images/image_1.png)
 
 # 👤 Autor
 
