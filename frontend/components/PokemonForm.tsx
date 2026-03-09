@@ -23,8 +23,8 @@ import { getPokemonTypePT } from "@/lib/pokemon-utils";
 import { POKEMON_TYPES } from "@/app/pokemon/[id]/constants";
 
 const pokemonSchema = z.object({
-  name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
-  type: z.string().min(2, "O tipo deve ter pelo menos 2 caracteres."),
+  name: z.string().min(2, "Insira o nome do seu pokemon."),
+  type: z.string().min(2, "Selecione o tipo do seu Pokemon"),
   typeTwo: z.string().optional(),
   level: z.coerce.number().min(1, "O nível deve ser no mínimo 1.").max(100, "O nível máximo é 100."),
   hp: z.coerce.number().min(1, "O HP deve ser no mínimo 1."),
