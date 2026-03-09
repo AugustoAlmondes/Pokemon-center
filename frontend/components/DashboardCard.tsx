@@ -43,7 +43,7 @@ export default function DashboardCard({ pokemon, userId, handleDelete }: Dashboa
                         <h2 className="pokemon-name">{pokemon.name}</h2>
                         {
                             isOwner && (
-                                <img src="/pokebola_pixel.png" className="w-8 h-8" />
+                                <img src="/images/pokebola_pixel.png" className="w-8 h-8" />
                             )
                         }
                     </div>
@@ -62,7 +62,7 @@ export default function DashboardCard({ pokemon, userId, handleDelete }: Dashboa
                             className="w-32 h-32 object-contain relative z-10 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-300"
                         /> :
                         <img
-                            src="/none_pokemon.png"
+                            src="/images/none_pokemon.png"
                             alt={pokemon.name.toLowerCase().trim()}
                             className="w-32 h-32 object-contain relative z-10 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-300"
                         />

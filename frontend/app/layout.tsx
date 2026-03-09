@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Icon } from "lucide-react";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="icon" href="/images/pokebola_pixel.png" type="image/png"/>
       </head>
       <body>{children}</body>
     </html>
