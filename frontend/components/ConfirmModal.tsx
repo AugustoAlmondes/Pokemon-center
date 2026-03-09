@@ -34,7 +34,7 @@ export function ConfirmModal({
 }: ConfirmModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-surface border-border text-primary backdrop-blur-xl max-w-md">
+      <DialogContent className="bg-(--bg-base) border-2 border-red-500/40 text-primary max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2 text-red">
             <MdWarning size={24} />
@@ -45,11 +45,11 @@ export function ConfirmModal({
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="gap-2 sm:gap-0 mt-4">
+        <DialogFooter className="gap-2 mt-4">
           <Button 
             variant="outline" 
             onClick={onClose}
-            className="bg-transparent border-white/10 hover:bg-white/5 text-primary"
+            className="bg-transparent border-white/10 hover:bg-white/5 text-primary cursor-pointer"
           >
             {cancelLabel}
           </Button>
@@ -58,7 +58,7 @@ export function ConfirmModal({
               onConfirm();
               onClose();
             }}
-            className={variant === "destructive" ? "bg-red hover:bg-red/80 text-white border-none" : "bg-primary hover:bg-primary/80 text-white border-none"}
+            className={variant === "destructive" ? " bg-red hover:bg-red/80 text-white cursor-pointer border-white/10 hover:bg-white/5" : "bg-primary hover:bg-primary/80  text-white cursor-pointer"}
           >
             {confirmLabel}
           </Button>

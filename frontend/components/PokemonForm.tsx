@@ -278,7 +278,7 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
       </form>
 
       <Dialog open={showConflictModal} onOpenChange={setShowConflictModal}>
-        <DialogContent className="bg-surface border-border text-primary backdrop-blur-xl">
+        <DialogContent className="bg-(--bg-base) text-primary border-2 border-yellow-500/40">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold flex items-center gap-2 text-yellow">
               <MdWarning size={24} />
@@ -307,17 +307,17 @@ export function PokemonForm({ initialData, onSubmit, submitLabel, isLoading, ser
             ))}
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2">
             <Button 
               variant="outline" 
               onClick={() => setShowConflictModal(false)}
-              className="bg-transparent border-white/10 hover:bg-white/5 text-primary"
+              className="bg-transparent border-white/10 hover:bg-white/5 text-primary cursor-pointer"
             >
               Voltar e Corrigir
             </Button>
             <Button 
               onClick={handleProceed}
-              className="bg-red hover:bg-red/80 text-white border-none"
+              className="bg-red hover:bg-red/80 text-white border-white/10 hover:bg-white/5 cursor-pointer"
             >
               Prosseguir Assim Mesmo
             </Button>
